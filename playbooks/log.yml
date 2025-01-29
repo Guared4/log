@@ -1,0 +1,6 @@
+---
+- import_playbook: update.yml
+- import_playbook: chrony.yml
+- import_playbook: nginx.yml
+- import_playbook: rsyslog-server.yml
+- import_playbook: audit.yml
