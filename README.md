@@ -69,7 +69,6 @@ Ansible (версия 2.7 и выше) - https://docs.ansible.com/ansible/latest
 ```vagrantfile
 
 Vagrant.configure("2") do |config|
-
   
   config.vm.provider :virtualbox do |v|
     v.memory = 2048
@@ -81,7 +80,15 @@ Vagrant.configure("2") do |config|
     log.vm.box = "bento/ubuntu-22.04"
     log.vm.hostname = "logserver"
     log.vm.network :private_network, ip: "192.168.57.10"
-    log.vm.network "forwarded_port", guest: 60, host: 1160
+    
+    log.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbooks/log.yml"
+      ansible.inventory_path = "inventory"
+      ansible.extra_vars = {
+        ansible_user: "vagrant",
+        ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
+      }
+    end
   end
 
   
@@ -90,17 +97,15 @@ Vagrant.configure("2") do |config|
     web.vm.hostname = "webserver"
     web.vm.network :private_network, ip: "192.168.57.20"
     web.vm.network "forwarded_port", guest: 80, host: 8080
-    web.vm.network "forwarded_port", guest: 514, host: 1514
-  end
-
-  
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbooks/log.yml"
-    ansible.inventory_path = "inventory"
-    ansible.extra_vars = {
-      ansible_user: "vagrant",
-      ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
-    }
+    
+    web.vm.provision "ansible" do |ansible|
+      ansible.playbook = "playbooks/log.yml"
+      ansible.inventory_path = "inventory"
+      ansible.extra_vars = {
+        ansible_user: "vagrant",
+        ansible_ssh_private_key_file: "~/.vagrant.d/insecure_private_key"
+      }
+    end
   end
 end
 
