@@ -1,0 +1,41 @@
+---
+- name: Install auditd and audispd-plugins
+  apt:
+    name:
+      - auditd
+      - audispd-plugins
+    state: present
+
+- name: Configure audit rules
+  template:
+    src: audit.rules.j2
+    dest: /etc/audit/rules.d/audit.rules
+    mode: 0644
+
+- name: Configure auditd
+  template:
+    src: auditd.conf.j2
+    dest: /etc/audit/auditd.conf
+    mode: 0644
+  notify: restart auditd
+
+- name: Ensure /etc/audisp/plugins.d directory exists
+  file:
+    path: /etc/audisp/plugins.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Configure au-remote
+  template:
+    src: au-remote.conf.j2
+    dest: /etc/audisp/plugins.d/au-remote.conf
+    mode: 0644
+
+- name: Configure audisp-remote
+  template:
+    src: audisp-remote.conf.j2
+    dest: /etc/audisp/audisp-remote.conf
+    mode: 0644
+  notify: restart auditd
