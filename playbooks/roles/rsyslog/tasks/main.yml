@@ -1,0 +1,15 @@
+---
+- name: Ensure /var/lib/rsyslog directory exists
+  file:
+    path: /var/lib/rsyslog
+    state: directory
+    owner: syslog
+    group: syslog
+    mode: '0755'
+
+- name: Configure Rsyslog
+  template:
+    src: rsyslog.conf.j2
+    dest: /etc/rsyslog.conf
+    mode: 0644
+  notify: restart rsyslog
