@@ -1,0 +1,6 @@
+---
+- name: Update system
+  hosts: all
+  become: true
+  roles:
+    - common
