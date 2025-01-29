@@ -1,0 +1,6 @@
+---
+- name: Configure Rsyslog
+  hosts: log
+  become: true
+  roles:
+    - rsyslog
