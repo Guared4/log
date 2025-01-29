@@ -1,0 +1,6 @@
+---
+- name: Configure Audit
+  hosts: all
+  become: true
+  roles:
+    - audit
